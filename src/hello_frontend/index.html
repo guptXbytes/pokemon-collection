@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokémon Collection</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      text-align: center;
+    }
+
+    .container {
+      width: 80%;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #ff4757;
+    }
+
+    .pokemon {
+      border: 1px solid #ced4da;
+      border-radius: 5px;
+      padding: 10px;
+      margin: 10px;
+      background-color: #ffffff;
+      transition: 0.3s;
+      display: inline-block;
+      width: 150px;
+    }
+
+    .pokemon:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .pokemon img {
+      width: 100px;
+      height: 100px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Pokémon Collection</h1>
+    <div id="pokemon-list"></div>
+  </div>
+
+  <script>
+    const pokemonList = document.getElementById("pokemon-list");
+
+    // Function to fetch Pokémon data
+    async function fetchPokemon() {
+      try {
+        const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=10");
+        const data = await response.json();
+        displayPokemon(data.results);
+      } catch (error) {
+        console.error("Error fetching Pokémon:", error);
+      }
+    }
+
+    // Function to display Pokémon
+    function displayPokemon(pokemons) {
+      pokemons.forEach(async (pokemon) => {
+        const pokemonData = await fetchPokemonDetails(pokemon.url);
+        const pokemonElement = createPokemonElement(pokemonData);
+        pokemonList.appendChild(pokemonElement);
+      });
+    }
+
+    // Function to fetch individual Pokémon details
+    async function fetchPokemonDetails(url) {
+      const response = await fetch(url);
+      return await response.json();
+    }
+
+    // Function to create Pokémon HTML element
+    function createPokemonElement(pokemon) {
+      const div = document.createElement("div");
+      div.classList.add("pokemon");
+      div.innerHTML = `
+                <h2>${pokemon.name}</h2>
+                <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
+                <p>Height: ${pokemon.height}</p>
+                <p>Weight: ${pokemon.weight}</p>
+            `;
+      return div;
+    }
+
+    // Initialize the app
+    fetchPokemon();
+  </script>
+</body>
+
+</html>
